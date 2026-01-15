@@ -1,0 +1,49 @@
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* MDC Angular Material v15+ */
+.mat-mdc-snack-bar-container.snackbar-success {
+  --mdc-snackbar-container-color: #0084ffa2;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+
+  /* extra compatibility */
+  --mat-snack-bar-container-color: #0084ffa2;
+  --mat-snack-bar-supporting-text-color: #ffffff;
+}
+
+.mat-mdc-snack-bar-container.snackbar-error {
+  --mdc-snackbar-container-color: #c62828;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+
+  /* extra compatibility */
+  --mat-snack-bar-container-color: #c62828;
+  --mat-snack-bar-supporting-text-color: #ffffff;
+}
+
+/* Legacy fallback */
+.mat-snack-bar-container.snackbar-success {
+  background: #0084ffa2 !important;
+  color: #ffffff !important;
+}
+
+.mat-snack-bar-container.snackbar-error {
+  background: #c62828 !important;
+  color: #ffffff !important;
+}
+
+/* If the class is on a wrapper inside the container */
+.mat-mdc-snack-bar-container .snackbar-success {
+  --mdc-snackbar-container-color: #0084ffa2;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+.mat-mdc-snack-bar-container .snackbar-error {
+  --mdc-snackbar-container-color: #c62828;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+.mat-mdc-snack-bar-container.snackbar-info {
+  --mdc-snackbar-container-color: #0084ffa2;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}

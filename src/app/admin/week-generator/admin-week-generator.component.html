@@ -1,0 +1,27 @@
+<div class="p-3">
+  <h3 class="h5 mb-3">Week generation</h3>
+
+  <div class="d-flex gap-2 flex-wrap">
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="generateCurrentWeek()"
+      [disabled]="generatingCurrent"
+    >
+      Generate current week
+    </button>
+
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="generateNextWeek()"
+      [disabled]="generatingNext"
+    >
+      Generate next week
+    </button>
+  </div>
+
+  <div class="text-muted mt-3">
+    Generates missing slots only. WOD descriptions remain empty until you edit them.
+  </div>
+</div>

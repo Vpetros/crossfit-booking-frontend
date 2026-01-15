@@ -1,0 +1,61 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <div>
+    <h5 class="mb-1">WOD Editor</h5>
+    <div class="text-muted small">Editing: <strong>Current week</strong></div>
+  </div>
+
+  <div>
+    <button
+      class="btn btn-outline-primary btn-sm"
+      type="button"
+      (click)="load()"
+      [disabled]="loading"
+    >
+      Load / Refresh
+    </button>
+  </div>
+</div>
+
+<div *ngIf="loading" class="alert alert-info">Loading...</div>
+<div *ngIf="error && !loading" class="alert alert-warning">{{ error }}</div>
+
+<!-- Day selector -->
+<div *ngIf="!loading && !error && days.length" class="day-strip mb-3">
+  <button
+    *ngFor="let d of days"
+    type="button"
+    class="btn btn-sm"
+    [class.btn-primary]="selectedDate === d.date"
+    [class.btn-outline-primary]="selectedDate !== d.date"
+    (click)="selectDay(d.date)"
+  >
+    {{ d.label }}
+    <span class="small text-muted">({{ d.date }})</span>
+  </button>
+</div>
+
+<!-- Slots -->
+<div *ngIf="!loading && !error">
+  <div *ngIf="!selectedDate" class="text-muted">Select a day to edit WODs.</div>
+
+  <div *ngFor="let s of slotsForSelectedDay()" class="card mb-2">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="fw-semibold">
+          {{ timeLabel(s.startTime, s.endTime) }}
+        </div>
+
+        <button class="btn btn-success btn-sm" type="button" (click)="save(s)">
+          Save
+        </button>
+      </div>
+
+      <textarea
+        class="form-control"
+        rows="3"
+        [(ngModel)]="s.workoutDescription"
+        placeholder="Enter workout description..."
+      ></textarea>
+    </div>
+  </div>
+</div>

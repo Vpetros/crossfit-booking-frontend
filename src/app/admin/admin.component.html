@@ -1,0 +1,13 @@
+<mat-tab-group (selectedTabChange)="onTabChange($event)">
+  <mat-tab label="Week generation">
+    <app-admin-week-generator></app-admin-week-generator>
+  </mat-tab>
+
+  <mat-tab label="WOD editor">
+    <app-admin-wod-editor></app-admin-wod-editor>
+  </mat-tab>
+
+  <mat-tab label="Reservations">
+    <app-admin-reservations></app-admin-reservations>
+  </mat-tab>
+</mat-tab-group>

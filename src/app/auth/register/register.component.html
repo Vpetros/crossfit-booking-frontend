@@ -1,0 +1,64 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="h4 mb-3">Register</h2>
+          <p class="text-muted mb-4">Create an account to book WOD slots.</p>
+
+        
+          <form [formGroup]="form" (ngSubmit)="submit()">
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+              <mat-label>Username</mat-label>
+              <input matInput type="text" formControlName="username" autocomplete="username" />
+              <mat-error *ngIf="username.touched && username.hasError('required')">Username is required.</mat-error>
+              <mat-error *ngIf="username.touched && username.hasError('minlength')"
+                >Username must be at least 3 characters.</mat-error
+              >
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" />
+              <mat-error *ngIf="email.touched && email.hasError('required')">
+                Email is required.
+              </mat-error>
+              <mat-error *ngIf="email.touched && email.hasError('email')">
+                Please enter a valid email.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+              <mat-label>Password</mat-label>
+              <input matInput type="password" formControlName="password" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+              <mat-label>Confirm password</mat-label>
+              <input matInput type="password" formControlName="confirmPassword" />
+              <mat-error *ngIf="confirmPassword.hasError('mismatch')">
+                Passwords do not match.
+              </mat-error>
+            </mat-form-field>
+
+            <button
+              mat-raised-button
+              type="submit"
+              class="w-100"
+              [disabled]="form.invalid || isSubmitting"
+            >
+              {{ isSubmitting ? 'Creating…' : 'Create account' }}
+            </button>
+          </form>
+
+          <hr class="my-4" />
+
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">Already have an account?</span>
+            <a routerLink="/auth/login">Sign in</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

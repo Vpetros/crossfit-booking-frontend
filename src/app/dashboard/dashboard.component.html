@@ -1,0 +1,15 @@
+<div class="container py-4">
+  <h2 class="h4 mb-3">Dashboard</h2>
+
+  <app-dashboard-admin
+    *ngIf="isAdmin"
+    [username]="username"
+    [refreshToken]="0"
+  ></app-dashboard-admin>
+
+  <app-dashboard-user
+    *ngIf="!isAdmin"
+    [username]="username"
+    [refreshToken]="0"
+  ></app-dashboard-user>
+</div>

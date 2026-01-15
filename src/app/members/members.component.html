@@ -1,0 +1,64 @@
+<div class="container py-4">
+  <div class="d-flex align-items-center justify-content-between mb-2">
+    <div>
+      <h2 class="h4 mb-1">Members</h2>
+      <div class="text-muted">Accounts</div>
+    </div>
+
+    <button mat-stroked-button color="primary" (click)="load()" [disabled]="loading">
+      Load / Refresh
+    </button>
+  </div>
+
+  <div class="d-flex flex-wrap gap-2 align-items-end mb-3">
+    <mat-form-field appearance="outline">
+      <mat-label>Search</mat-label>
+      <input matInput [(ngModel)]="filter" placeholder="username or email" />
+    </mat-form-field>
+
+    <button mat-stroked-button color="warn" (click)="clearFilter()" [disabled]="!filter">
+      Clear
+    </button>
+
+    <div class="ms-auto text-muted small">
+      Showing {{ filteredMembers.length }} of {{ members.length }}
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-muted">Loading members…</div>
+
+  <div *ngIf="!loading && error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <div *ngIf="members.length === 0" class="alert alert-secondary">
+      No members found.
+    </div>
+
+    <table
+      mat-table
+      [dataSource]="filteredMembers"
+      class="mat-elevation-z1 w-100"
+      *ngIf="filteredMembers.length > 0"
+    >
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef>Username</th>
+        <td mat-cell *matCellDef="let m">{{ m.username }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let m">{{ m.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef>Created at</th>
+        <td mat-cell *matCellDef="let m">{{ formatCreatedAt(m.createdAt) }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</div>
