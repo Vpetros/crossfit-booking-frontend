@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, forkJoin, Observable, throwError, of } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
-import { TokenStorage } from '../../auth/token.storage';
+import { HttpErrorResponse } from '@angular/common/http';
 
+import { TokenStorage } from '../../auth/token.storage';
 import { WodScheduleApi } from '../../core/api/wod-schedule.api';
 import { BookingsApi } from '../../core/api/bookings.api';
 import { BookingResponseDto } from '../../core/api/models';
@@ -39,7 +40,7 @@ export class WeekFacade {
 
   constructor(
     private wodApi: WodScheduleApi,
-    private bookingsApi: BookingsApi
+    private bookingsApi: BookingsApi,
   ) {}
 
   get snapshot(): WeekState {
@@ -62,11 +63,11 @@ export class WeekFacade {
     const requests = canLoadMyBookings
       ? forkJoin({
           week: this.wodApi.getCurrentWeek(),
-          mine: this.bookingsApi.getMyBookings()
+          mine: this.bookingsApi.getMyBookings(),
         })
       : forkJoin({
           week: this.wodApi.getCurrentWeek(),
-          mine: of([])
+          mine: of([] as BookingResponseDto[]),
         });
 
     requests.subscribe({
@@ -79,7 +80,11 @@ export class WeekFacade {
         const days = buildDays(schedules);
         const bookingByDate = buildBookingByDate(bookings, scheduleById);
         const myBookingSummary = buildMyBookingSummary(bookings, scheduleById);
-        const selectedDate = this.computeDefaultSelectedDate(days, bookingByDate);
+
+        // default selected date, first booking date
+        const selectedDate =
+          myBookingSummary?.date ??
+          this.computeDefaultSelectedDate(days, bookingByDate);
 
         this.subject.next({
           ...this.snapshot,
@@ -94,9 +99,9 @@ export class WeekFacade {
           myBookingSummary,
         });
       },
-      error: (err) => {
+      error: (err: unknown) => {
         // If token expired/invalid, global interceptor handles logout+redirect.
-        if (err?.status === 401 || err?.status === 403) {
+        if (err instanceof HttpErrorResponse && (err.status === 401 || err.status === 403)) {
           this.patch({ loading: false });
           return;
         }
@@ -113,8 +118,7 @@ export class WeekFacade {
     this.patch({ pendingScheduleIds: pending });
 
     return this.bookingsApi.book(scheduleId).pipe(
-      tap(() => {
-      }),
+      tap(() => {}),
       catchError((err) => throwError(() => err)),
       finalize(() => {
         const p = new Set(this.snapshot.pendingScheduleIds);
@@ -130,8 +134,7 @@ export class WeekFacade {
     this.patch({ pendingScheduleIds: pending });
 
     return this.bookingsApi.cancel(bookingId).pipe(
-      tap(() => {
-      }),
+      tap(() => {}),
       catchError((err) => throwError(() => err)),
       finalize(() => {
         const p = new Set(this.snapshot.pendingScheduleIds);
@@ -143,8 +146,9 @@ export class WeekFacade {
 
   private computeDefaultSelectedDate(
     days: { date: string }[],
-    bookingByDate: Map<string, BookingResponseDto>
+    bookingByDate: Map<string, BookingResponseDto>,
   ): string | null {
+    // if user has bookings, pick earliest booking date
     const bookingDate = Array.from(bookingByDate.keys()).sort()[0];
     if (bookingDate) return bookingDate;
 

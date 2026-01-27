@@ -1,6 +1,12 @@
 import { BookingResponseDto, WodScheduleDto } from '../../core/api/models';
 import { BookingSummary, DayGroup } from '../models/week.models';
-import { formatDayLabel, getIsoWeekday, normalizeTime, timeToMinutes } from '../utils/date-time.utils';
+import {
+  formatDayLabel,
+  getIsoWeekday,
+  normalizeTime,
+  parseDateTimeLocal,
+  timeToMinutes,
+} from '../utils/date-time.utils';
 
 export function buildScheduleById(schedules: WodScheduleDto[]): Map<string, WodScheduleDto> {
   const map = new Map<string, WodScheduleDto>();
@@ -51,21 +57,28 @@ export function buildMyBookingSummary(
   bookings: BookingResponseDto[],
   scheduleById: Map<string, WodScheduleDto>
 ): BookingSummary | null {
-  const pairs: Array<{ b: BookingResponseDto; s: WodScheduleDto }> = [];
+  const pairs: Array<{ b: BookingResponseDto; s: WodScheduleDto; slotTs: number }> = [];
 
   for (const b of bookings) {
     const s = scheduleById.get(b.wodScheduleId);
-    if (s) pairs.push({ b, s });
+    if (!s) continue;
+
+    const slotTs = parseDateTimeLocal(s.date, s.startTime).getTime();
+    pairs.push({ b, s, slotTs });
   }
 
   if (!pairs.length) return null;
 
-  pairs.sort((x, y) => {
-    if (x.s.date !== y.s.date) return x.s.date.localeCompare(y.s.date);
-    return timeToMinutes(x.s.startTime) - timeToMinutes(y.s.startTime);
-  });
+  // Sort by actual slot datetime (ascending)
+  pairs.sort((x, y) => x.slotTs - y.slotTs);
 
-  const { b, s } = pairs[0];
+  const nowTs = Date.now();
+
+  // First upcoming (>= now). If none, fall back to recent past.
+  const upcoming = pairs.find((p) => p.slotTs >= nowTs);
+  const pick = upcoming ?? pairs[pairs.length - 1];
+
+  const { b, s } = pick;
   const start = normalizeTime(s.startTime);
   const end = normalizeTime(s.endTime);
   const label = `${formatDayLabel(s.date)} ${start} - ${end}`;

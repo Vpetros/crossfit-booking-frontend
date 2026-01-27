@@ -1,11 +1,17 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { WeekFacade } from './services/week.facade';
 import { WeekState } from './models/week.models';
-import { normalizeTime, parseDateTimeLocal } from './utils/date-time.utils';
 import { WodScheduleDto } from '../core/api/models';
+import { TokenStorage } from '../auth/token.storage';
+
+import {
+  normalizeTime,
+  parseDateTimeLocal,
+} from './utils/date-time.utils';
 
 @Component({
   selector: 'app-week',
@@ -18,7 +24,15 @@ export class WeekComponent {
   private readonly facade = inject(WeekFacade);
   private readonly snackBar = inject(MatSnackBar);
 
-  state$ = this.facade.state$;
+  readonly state$ = this.facade.state$;
+
+  // Keep internal as private; expose to template via getter.
+  private readonly _isUserRole = TokenStorage.getRoles().includes('ROLE_USER');
+
+  /** Used by template to show/hide booking actions */
+  get isUserRole(): boolean {
+    return this._isUserRole;
+  }
 
   ngOnInit(): void {
     this.facade.load();
@@ -37,22 +51,22 @@ export class WeekComponent {
     return state.days.find((d) => d.date === state.selectedDate) ?? null;
   }
 
-  // ---- UI ----
+  // ---- UI helpers ----
 
   slotLabel(s: WodScheduleDto): string {
     return `${normalizeTime(s.startTime)} - ${normalizeTime(s.endTime)}`;
   }
 
   availableSpots(s: WodScheduleDto): number {
-    return Math.max(0, (s.capacity ?? 0) - (s.bookedCount ?? 0));
-  }
-
-  isClosed(s: WodScheduleDto): boolean {
-    return !s.workoutDescription || s.workoutDescription.trim().length === 0;
+    return (s.capacity ?? 0) - (s.bookedCount ?? 0);
   }
 
   isFull(s: WodScheduleDto): boolean {
     return this.availableSpots(s) <= 0;
+  }
+
+  isClosed(s: WodScheduleDto): boolean {
+    return !(s.workoutDescription ?? '').trim();
   }
 
   isBooked(state: WeekState, s: WodScheduleDto): boolean {
@@ -60,38 +74,41 @@ export class WeekComponent {
   }
 
   hasBookingSameDay(state: WeekState, s: WodScheduleDto): boolean {
-    const b = state.bookingByDate.get(s.date);
-    return !!b && b.wodScheduleId !== s.id;
+    const date = s.date;
+    if (!date) return false;
+
+    const bookingsForDate = state.bookingByDate.get(date);
+    if (!bookingsForDate) return false;
+
+    // If the slot is already booked (same schedule), we don't treat as "conflict"
+    return !this.isBooked(state, s);
   }
 
   isPastSlot(s: WodScheduleDto): boolean {
-    const now = new Date();
-    const start = parseDateTimeLocal(s.date, s.startTime);
-    return start.getTime() <= now.getTime();
+    const dt = parseDateTimeLocal(s.date, s.startTime);
+    return dt.getTime() < Date.now();
   }
 
   canBook(state: WeekState, s: WodScheduleDto): boolean {
-    return (
-      !this.isClosed(s) &&
-      !this.isFull(s) &&
-      !this.isPastSlot(s) &&
-      !this.hasBookingSameDay(state, s) &&
-      !this.isBooked(state, s) &&
-      !state.pendingScheduleIds.has(s.id)
-    );
+    if (!this.isUserRole) return false; // admin cannot book
+    if (this.isBooked(state, s)) return false;
+    if (this.isFull(s)) return false;
+    if (this.isPastSlot(s)) return false;
+    if (this.hasBookingSameDay(state, s)) return false;
+    if (this.isClosed(s)) return false;
+
+    return !state.pendingScheduleIds.has(s.id);
   }
 
   canCancel(state: WeekState, s: WodScheduleDto): boolean {
-    return this.isBooked(state, s) && !state.pendingScheduleIds.has(s.id);
+    if (!this.isUserRole) return false; // admin cannot cancel
+    if (!this.isBooked(state, s)) return false;
+    if (this.isPastSlot(s)) return false;
+
+    return !state.pendingScheduleIds.has(s.id);
   }
 
-
-  private showError(message: string): void {
-    this.snackBar.open(message, 'Close', {
-      duration: 4000,
-      panelClass: ['snackbar-error'],
-    });
-  }
+  // ---- Messages ----
 
   private showSuccess(message: string): void {
     this.snackBar.open(message, 'OK', {
@@ -100,8 +117,16 @@ export class WeekComponent {
     });
   }
 
-  private extractErrorMessage(err: any): string {
-    const e = err?.error;
+  private showError(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 4000,
+      panelClass: ['snackbar-error'],
+    });
+  }
+
+  private extractErrorMessage(err: unknown): string {
+    const anyErr = err as any;
+    const e = anyErr?.error;
     if (!e) return 'Request failed';
     if (typeof e === 'string') return e;
     if (typeof e?.message === 'string') return e.message;
@@ -111,12 +136,14 @@ export class WeekComponent {
   // ---- Actions ----
 
   book(s: WodScheduleDto): void {
+    if (!this.isUserRole) return;
+
     this.facade.book(s.id).subscribe({
       next: () => {
         this.showSuccess('Booking successful');
         this.facade.load();
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error(err);
         this.showError(this.extractErrorMessage(err));
       },
@@ -124,6 +151,8 @@ export class WeekComponent {
   }
 
   cancel(state: WeekState, s: WodScheduleDto): void {
+    if (!this.isUserRole) return;
+
     const booking = state.bookingByScheduleId.get(s.id);
     if (!booking) return;
 
@@ -132,7 +161,7 @@ export class WeekComponent {
         this.showSuccess('Booking cancelled');
         this.facade.load();
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error(err);
         this.showError(this.extractErrorMessage(err));
       },

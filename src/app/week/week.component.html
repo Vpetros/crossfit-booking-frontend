@@ -8,7 +8,9 @@
   <div *ngIf="!state.loading && !state.error">
     <div class="d-flex align-items-center justify-content-between mb-3">
       <h2 class="h4 mb-0">Week</h2>
-      <button class="btn btn-outline-secondary btn-sm" (click)="refresh()">Refresh</button>
+      <button class="btn btn-outline-secondary btn-sm" (click)="refresh()">
+        Refresh
+      </button>
     </div>
 
     <div *ngIf="state.days.length === 0" class="alert alert-warning">
@@ -19,7 +21,12 @@
       <strong>Your booking:</strong> {{ summary.label }}
     </div>
 
-    <div *ngIf="state.days.length > 0" class="btn-group flex-wrap mb-3" role="group">
+    <!-- Day selector -->
+    <div
+      *ngIf="state.days.length > 0"
+      class="btn-group flex-wrap mb-3"
+      role="group"
+    >
       <button
         type="button"
         class="btn"
@@ -32,6 +39,7 @@
       </button>
     </div>
 
+    <!-- Selected day -->
     <ng-container *ngIf="selectedDay(state) as day; else noDayTpl">
       <div class="card shadow-sm">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -40,18 +48,28 @@
         </div>
 
         <div class="card-body p-0">
-          <div *ngIf="day.slots.length === 0" class="p-3 text-muted">No slots.</div>
+          <div *ngIf="day.slots.length === 0" class="p-3 text-muted">
+            No slots.
+          </div>
 
           <div class="list-group list-group-flush">
-            <div class="list-group-item d-flex justify-content-between align-items-start" *ngFor="let s of day.slots">
+            <div
+              class="list-group-item d-flex justify-content-between align-items-start"
+              *ngFor="let s of day.slots"
+            >
               <div class="me-3">
                 <div class="fw-semibold">{{ slotLabel(s) }}</div>
 
-                <div class="text-muted small" *ngIf="!isClosed(s); else closedTpl">
+                <div
+                  class="text-muted small"
+                  *ngIf="!isClosed(s); else closedTpl"
+                >
                   {{ s.workoutDescription }}
                 </div>
                 <ng-template #closedTpl>
-                  <div class="text-muted small">WOD not posted yet (closed)</div>
+                  <div class="text-muted small">
+                    WOD not posted yet (closed)
+                  </div>
                 </ng-template>
 
                 <div class="small mt-2">
@@ -59,17 +77,38 @@
                     Spots: {{ availableSpots(s) }}/{{ s.capacity }}
                   </span>
 
-                  <span class="badge text-bg-success me-2" *ngIf="isBooked(state, s)">Booked</span>
-                  <span class="badge text-bg-danger me-2" *ngIf="isFull(s)">Full</span>
-                  <span class="badge text-bg-warning me-2" *ngIf="isPastSlot(s)">Past</span>
+                  <span
+                    class="badge text-bg-success me-2"
+                    *ngIf="isBooked(state, s)"
+                    >Booked</span
+                  >
+                  <span
+                    class="badge text-bg-danger me-2"
+                    *ngIf="isFull(s)"
+                    >Full</span
+                  >
+                  <span
+                    class="badge text-bg-warning me-2"
+                    *ngIf="isPastSlot(s)"
+                    >Past</span
+                  >
                 </div>
 
-                <div class="text-danger small mt-2" *ngIf="hasBookingSameDay(state, s) && !isBooked(state, s)">
+                <!-- Only users see booking conflict hint -->
+                <div
+                  class="text-danger small mt-2"
+                  *ngIf="
+                    isUserRole &&
+                    hasBookingSameDay(state, s) &&
+                    !isBooked(state, s)
+                  "
+                >
                   You already have a booking for this day.
                 </div>
               </div>
 
-              <div class="d-flex gap-2">
+              <!-- ACTIONS: ONLY FOR USERS -->
+              <div class="d-flex gap-2" *ngIf="isUserRole">
                 <button
                   class="btn btn-primary btn-sm"
                   (click)="book(s)"

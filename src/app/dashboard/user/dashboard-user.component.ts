@@ -114,4 +114,39 @@ export class DashboardUserComponent implements OnChanges {
   slotLabel(s: WodScheduleDto): string {
     return `${normalizeTime(s.startTime)} - ${normalizeTime(s.endTime)}`;
   }
+
+  formatIsoDateDMY(dateIso: string): string {
+    if (!dateIso) return '';
+    const parts = dateIso.split('-');
+    if (parts.length !== 3) return dateIso;
+
+    const y = Number(parts[0]);
+    const m = Number(parts[1]);
+    const d = Number(parts[2]);
+
+    if (!y || !m || !d) return dateIso;
+    return `${d}-${m}-${y}`;
+  }
+
+  formatBookedAt(isoTimestamp: string): string {
+    if (!isoTimestamp) return '';
+
+    const dt = new Date(isoTimestamp);
+    if (Number.isNaN(dt.getTime())) return isoTimestamp;
+
+    const d = dt.getDate();
+    const m = dt.getMonth() + 1;
+    const y = dt.getFullYear();
+
+    const timePart = dt.toLocaleTimeString(undefined, {
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+
+    return `${d}-${m}-${y}, ${timePart}`;
+  }
+
+  formatTimeHHmm(time: string): string {
+    return normalizeTime(time);
+  }
 }
