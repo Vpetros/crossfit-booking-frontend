@@ -128,3 +128,36 @@ Deployment steps (generic):
 - CORS is handled on the backend
 
 - JWT token must be provided by the backend authentication endpoints
+
+
+## Testing
+
+The application has been tested during development using manual and functional testing techniques.
+
+### Backend Testing
+
+- All REST API endpoints were tested using Swagger / OpenAPI UI
+
+- Authentication and authorization flows were verified using JWT-based security
+
+- HTTP status codes (200, 401, 403, 404) were validated for both authorized and unauthorized requests
+
+- Business logic scenarios such as booking creation, cancellation and schedule generation were tested
+
+### Frontend Testing
+
+- User interactions were tested through the Angular UI
+
+- Authentication flow (login, logout, token handling) was verified
+
+- Route protection and role-based access control were validated
+
+- Integration between frontend and backend APIs was tested end-to-end
+
+### Overall Validation
+
+Successful communication between frontend and backend was verified
+
+Application behavior was validated for both ROLE_USER and ROLE_ADMIN
+
+All REST endpoints are documented and manually tested through Swagger, ensuring correct request/response behavior and HTTP status codes.
