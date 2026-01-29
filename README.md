@@ -59,9 +59,11 @@ export const environment = {
 };
 
 ```
-```ts
 
-src/environments/environment.prod.ts (production example)
+
+### `src/environments/environment.prod.ts (production example)
+
+```ts
 
 export const environment = {
   production: true,
