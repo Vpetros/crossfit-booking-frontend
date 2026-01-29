@@ -68,21 +68,21 @@ export const environment = {
 
 ```
 
-Run (Local Development)
+## Run (Local Development)
 Install dependencies
 
-npm install
+- npm install
 
 Start development server
 
-ng serve
+- ng serve
 
 The application will be available at:
 
 http://localhost:4200
 
 The app automatically reloads on source code changes.
-Build
+## Build
 Production build
 
 ng build
@@ -91,13 +91,7 @@ Build artifacts will be generated in:
 
 dist/
 
-Testing
-Unit tests
-
-ng test
-
-Tests are executed using the Karma test runner.
-Backend Integration
+## Backend Integration
 
 The frontend expects a running backend API with:
 
@@ -107,15 +101,7 @@ The frontend expects a running backend API with:
 
     Swagger-documented endpoints
 
-Backend responsibilities:
-
-    Authentication & Authorization
-
-    Business logic
-
-    Database access
-
-Security
+## Security
 
     JWT token stored client-side and attached via HTTP interceptor
 
@@ -123,17 +109,7 @@ Security
 
     Role-based UI rendering
 
-Deploy
-
-The frontend can be deployed as a static application on platforms such as:
-
-    Render
-
-    Netlify
-
-    Vercel
-
-    Firebase Hosting
+## Deploy
 
 Deployment steps (generic):
 
@@ -143,9 +119,7 @@ Deployment steps (generic):
 
     Configure environment-specific API URL
 
-Notes
-
-    The frontend is framework-agnostic to backend deployment (local or cloud)
+## Notes
 
     CORS is handled on the backend
 
