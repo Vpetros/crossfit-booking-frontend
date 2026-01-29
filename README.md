@@ -85,7 +85,7 @@ The app automatically reloads on source code changes.
 ## Build
 Production build
 
-ng build
+- ng build
 
 Build artifacts will be generated in:
 
