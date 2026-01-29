@@ -44,6 +44,30 @@ The application communicates with a Spring Boot REST API secured with JWT authen
 
 ---
 
+### Project Structure
+
+src/
+└── app/
+├── auth/ # Login, register, auth services & models
+├── admin/ # Admin-only views (WOD editor, reservations, week generator)
+├── dashboard/ # User & Admin dashboards
+├── members/ # Members-related views
+├── week/ # Weekly schedule (components, services, utils)
+│ ├── models/
+│ ├── services/
+│ └── utils/
+├── core/ # Cross-cutting concerns
+│ ├── api/ # Backend API services
+│ ├── auth/ # Guards & interceptors
+│ └── models.ts
+├── layout/ # Application layout components
+├── app.routes.ts # Application routing
+├── app.component.* # Root component
+└── app.config.ts
+└── environments/
+├── environment.ts
+└── environment.prod.ts
+
 ## Configuration
 
 ### Environment files
