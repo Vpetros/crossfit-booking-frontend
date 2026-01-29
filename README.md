@@ -99,32 +99,32 @@ dist/
 
 The frontend expects a running backend API with:
 
-    JWT authentication
+- JWT authentication
 
-    REST endpoints under /api/**
+- REST endpoints under /api/**
 
-    Swagger-documented endpoints
+- Swagger-documented endpoints
 
 ## Security
 
-    JWT token stored client-side and attached via HTTP interceptor
+- JWT token stored client-side and attached via HTTP interceptor
 
-    Route protection via Angular Guards
+- Route protection via Angular Guards
 
-    Role-based UI rendering
+- Role-based UI rendering
 
 ## Deploy
 
 Deployment steps (generic):
 
-    Run ng build
+- Run ng build
 
-    Deploy the contents of dist/
+- Deploy the contents of dist/
 
-    Configure environment-specific API URL
+- Configure environment-specific API URL
 
 ## Notes
 
-    CORS is handled on the backend
+- CORS is handled on the backend
 
-    JWT token must be provided by the backend authentication endpoints
+- JWT token must be provided by the backend authentication endpoints
