@@ -1,59 +1,152 @@
-# CrossfitBookingFrontend
+# Crossfit Booking Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.13.
+Frontend application for the Crossfit Booking system.  
+Users can register/login, view weekly WOD schedules, book training slots, and manage reservations.  
+Admins can manage schedules and bookings through a role-based UI.
 
-## Development server
+The application communicates with a Spring Boot REST API secured with JWT authentication.
 
-To start a local development server, run:
+---
 
-```bash
+## General Requirements
+
+- Node.js 22.19.0
+- npm 11.6.0
+- Angular CLI 20.3.13
+
+---
+
+## Tech Stack
+
+- Angular 20.3.15
+- Angular CLI 20.3.13
+- Angular Router
+- Angular HttpClient
+- Angular Material 20.2.14
+- TypeScript 5.9.3
+- RxJS 7.8.2
+- Zone.js 0.15.1
+
+---
+
+## Features
+
+### User
+- Register & Login
+- View weekly WOD schedule
+- Book one training slot per day
+- Cancel bookings
+- JWT-based authentication
+
+### Admin
+- View and manage weekly schedules
+- Manage bookings
+- Role-based UI access
+
+---
+
+## Configuration
+
+### Environment files
+
+API configuration is handled through Angular environment files.
+
+#### `src/environments/environment.ts` (development example)
+
+```ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8080/api'
+};
+
+src/environments/environment.prod.ts (production example)
+
+export const environment = {
+  production: true,
+  apiUrl: '<BACKEND_API_URL>'
+};
+
+```
+
+Run (Local Development)
+Install dependencies
+
+npm install
+
+Start development server
+
 ng serve
-```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+The application will be available at:
 
-## Code scaffolding
+http://localhost:4200
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+The app automatically reloads on source code changes.
+Build
+Production build
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
 ng build
-```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Build artifacts will be generated in:
 
-## Running unit tests
+dist/
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Testing
+Unit tests
 
-```bash
 ng test
-```
 
-## Running end-to-end tests
+Tests are executed using the Karma test runner.
+Backend Integration
 
-For end-to-end (e2e) testing, run:
+The frontend expects a running backend API with:
 
-```bash
-ng e2e
-```
+    JWT authentication
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+    REST endpoints under /api/**
 
-## Additional Resources
+    Swagger-documented endpoints
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Backend responsibilities:
+
+    Authentication & Authorization
+
+    Business logic
+
+    Database access
+
+Security
+
+    JWT token stored client-side and attached via HTTP interceptor
+
+    Route protection via Angular Guards
+
+    Role-based UI rendering
+
+Deploy
+
+The frontend can be deployed as a static application on platforms such as:
+
+    Render
+
+    Netlify
+
+    Vercel
+
+    Firebase Hosting
+
+Deployment steps (generic):
+
+    Run ng build
+
+    Deploy the contents of dist/
+
+    Configure environment-specific API URL
+
+Notes
+
+    The frontend is framework-agnostic to backend deployment (local or cloud)
+
+    CORS is handled on the backend
+
+    JWT token must be provided by the backend authentication endpoints
