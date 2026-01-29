@@ -53,8 +53,9 @@ export class AdminReservationsComponent {
       next: (rows) => {
         const all = rows ?? [];
 
-        // show only current + future
-        this.bookings = all.filter((b) => !this.isPastReservation(b));
+        // show bookings
+        this.bookings = all;
+
 
         this.bookingsLoading = false;
       },
@@ -66,7 +67,7 @@ export class AdminReservationsComponent {
     });
   }
 
-  // clear past only
+  // "clear" button clears past only
   clearPast(): void {
     const before = this.bookings.length;
     this.bookings = this.bookings.filter((b) => !this.isPastReservation(b));
