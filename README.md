@@ -45,7 +45,7 @@ The application communicates with a Spring Boot REST API secured with JWT authen
 ---
 
 ### Project Structure
-
+```
 src/
 └── app/
 ├── auth/ # Login, register, auth services & models
@@ -67,6 +67,8 @@ src/
 └── environments/
 ├── environment.ts
 └── environment.prod.ts
+
+```
 
 ## Configuration
 
