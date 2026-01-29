@@ -1,8 +1,7 @@
 # Crossfit Booking Frontend
 
-Frontend application for the Crossfit Booking system.  
-Users can register/login, view weekly WOD schedules, book training slots, and manage reservations.  
-Admins can manage schedules and bookings through a role-based UI.
+CrossFit gym booking application where users can register/login, view weekly WOD schedules, book training slots, and cancel reservations.
+Administrators can manage WOD descriptions and generate weekly schedules.
 
 The application communicates with a Spring Boot REST API secured with JWT authentication.
 
