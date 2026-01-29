@@ -156,8 +156,8 @@ The application has been tested during development using manual and functional t
 
 ### Overall Validation
 
-Successful communication between frontend and backend was verified
+  Successful communication between frontend and backend was verified
 
-Application behavior was validated for both ROLE_USER and ROLE_ADMIN
+  Application behavior was validated for both ROLE_USER and ROLE_ADMIN
 
-All REST endpoints are documented and manually tested through Swagger, ensuring correct request/response behavior and HTTP status codes.
+  All REST endpoints are documented and manually tested through Swagger, ensuring correct request/response behavior and HTTP status codes.
